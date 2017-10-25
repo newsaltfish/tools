@@ -2,71 +2,15 @@ package dataexport
 
 import (
 	"fmt"
-	"github.com/astaxie/beego/orm"
-	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 	"strconv"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	"github.com/astaxie/beego/orm"
+
 	"github.com/tealeg/xlsx"
 	"github.com/wzshiming/ffmt"
-	"golang.org/x/crypto/ssh"
-	"net"
-	"os"
-	"strings"
 )
-
-// Conn 连接
-type Conn struct {
-	ConnName string // 连接名字
-	User     string // 用户名
-	Password string // 密码
-	Addr     string // 连接地址
-}
-
-func init() {
-	//  注册代理
-	mysql.RegisterDial("ssh_dial", func(addr string) (conn net.Conn, err error) {
-		ffmt.Mark(addr)
-		PassWd := []ssh.AuthMethod{ssh.Password("hxh")}
-		cli, err := ssh.Dial("tcp", "ssh.hxh-test.wzsm.studio:22", &ssh.ClientConfig{
-			User: "hxh",
-			Auth: PassWd,
-		})
-		if err != nil {
-			ffmt.Mark(err)
-			return
-		}
-		conn, err = cli.Dial("tcp", "mysql.hexianghang.cn:3306")
-		if err != nil {
-			ffmt.Mark(err)
-			return
-		}
-		return
-	})
-
-	dataSource := "root:toor@tcp(db.gs.wzsm.studio:3306)/wjs_core?charset=utf8mb4&loc=Local"
-	dataSource = "hxh:Hxh123123@ssh_dial(mysql.hexianghang.cn:3306)/wjs_core?charset=utf8mb4&loc=Local"
-	//orm.RegisterDataBase("default", "mysql",dataSource )
-	err := orm.RegisterDataBase("default", "mysql", dataSource)
-	if err != nil {
-		os.Exit(1)
-	}
-
-}
-
-// user:passwd@ssh(addt)->u:p@tcp(addr)/dbname
-// user:password@net(addr)
-func parseDataSource(d string) (conn []Conn) {
-
-	cs := strings.Split(d, "->")
-	for i := len(cs) - 1; i >= 0; i-- {
-
-	}
-
-	return
-}
 
 var (
 	purchase = `SELECT
