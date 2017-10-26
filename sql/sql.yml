@@ -2,15 +2,32 @@
 
 
 # Toutiao 金日头条
-Toutiao: >
+ToutiaoRegister: >
    SELECT
    platform,
    DATE(create_time),
    COUNT(1)
    FROM users
    WHERE platform BETWEEN 1090 AND 1099
+   and  DATE(create_time)= ? 
    GROUP BY platform,DATE(create_time)
    ORDER BY platform,DATE(create_time)
+
+ToutiaoPurchase: >
+ SELECT platform,create_time,COUNT(1),SUM(number)/100
+ FROM (
+ SELECT
+ DATE(p.create_time) create_time,
+ u.platform platform,
+ COUNT(1) count,
+ SUM(p.number) number
+ FROM
+ purchase_record p
+ LEFT JOIN users u ON p.user_id = u.id
+ WHERE u.platform BETWEEN 1090 AND 1099
+ AND  DATE(p.create_time)=?
+ GROUP BY DATE(p.create_time),u.platform,p.user_id)a
+ GROUP BY platform,create_time
 
 pucharse: >
   SELECT

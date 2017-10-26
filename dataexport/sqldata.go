@@ -12,25 +12,28 @@ import (
 	"github.com/wzshiming/ffmt"
 )
 
-var (
-	purchase         = ""
-	platformPurchase = ""
-	charge           = ""
-	balanceRecord    = ""
-)
-
-func PurchaseRecord(fname string) {
+func PurchaseRecord(fname string, purchase string, platformPurchase string) {
 	sliceToFile(paramToInterface(sqlData(fname, purchase)), fname)
 	sliceToFile(paramToInterface(sqlData(fname, platformPurchase)), fname)
 }
 
 // SqlToFile sql查询结果导出
 func SqlToFile(filename string, sql string, args ...interface{}) {
-	sliceToFile(paramToInterface(sqlData(purchase)), filename)
+	sliceToFile(paramToInterface(sqlData(sql)), filename)
+}
+
+// SqlToSilce sql返回数组
+func SqlToSilce(sql string, args ...interface{}) [][]interface{} {
+	return paramToInterface(sqlData(sql, args...))
+}
+
+// SliceToFile 数组保持到文件
+func SliceToFile(req [][]interface{}, fname string) {
+	sliceToFile(req, fname)
 }
 
 // ActivityRecord 活动
-func ActivityRecord(fname string) {
+func ActivityRecord(fname string, charge string, balanceRecord string) {
 	yestoday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
 	// 充值记录
 	cv := sqlData(charge, yestoday)
