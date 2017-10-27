@@ -2,8 +2,9 @@ package email
 
 import (
 	"fmt"
-	"github.com/go-gomail/gomail"
 	"strings"
+
+	"github.com/go-gomail/gomail"
 )
 
 func defaultSend() {
@@ -29,7 +30,9 @@ func GetMessage(from, tos, ccs, subject, body, filenames string) *gomail.Message
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", strings.Split(tos, ",")...)
-	m.SetHeader("Cc", strings.Split(ccs, ",")...)
+	if ccs != "" {
+		m.SetHeader("Cc", strings.Split(ccs, ",")...)
+	}
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", body)
 	for _, value := range strings.Split(filenames, ",") {
