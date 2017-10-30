@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-	"time"
 
 	"github.com/astaxie/beego/orm"
 
@@ -19,7 +18,7 @@ func PurchaseRecord(fname string, purchase string, platformPurchase string) {
 
 // SqlToFile sql查询结果导出
 func SqlToFile(filename string, sql string, args ...interface{}) {
-	sliceToFile(paramToInterface(sqlData(sql)), filename)
+	sliceToFile(paramToInterface(sqlData(sql, args...)), filename)
 }
 
 // SqlToSilce sql返回数组
@@ -33,19 +32,15 @@ func SliceToFile(req [][]interface{}, fname string) {
 }
 
 // ActivityRecord 活动
-func ActivityRecord(fname string, charge string, balanceRecord string) {
-	yestoday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
-	// 充值记录
-	cv := sqlData(charge, yestoday)
-	// 余额记录
-	bv := sqlData(balanceRecord, yestoday)
-	sliceToFile(paramToInterface(append(cv, bv...)), fname)
+func ActivityRecord(fname string, date string, balanceRecord string) {
+	sliceToFile(paramToInterface(sqlData(balanceRecord, date)), fname)
 }
 
 func sqlData(sql string, args ...interface{}) (v []orm.ParamsList) {
 	o := orm.NewOrm()
 	_, err := o.Raw(sql, args...).ValuesList(&v)
 	if err != nil {
+		ffmt.Mark(sql, args)
 		ffmt.Mark(err)
 		return
 	}
@@ -82,6 +77,8 @@ func sliceToFile(s [][]interface{}, fname string) {
 			cell.Value = fmt.Sprint(value)
 		}
 	}
-	f.Save(fname)
+	if err := f.Save(fname); err != nil {
+		ffmt.Mark(err)
+	}
 	fmt.Println(fname + " .......... done")
 }

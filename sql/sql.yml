@@ -9,7 +9,6 @@ ToutiaoRegister: >
    COUNT(1)
    FROM users
    WHERE platform BETWEEN 1090 AND 1099
-   and  DATE(create_time)= ? 
    GROUP BY platform,DATE(create_time)
    ORDER BY platform,DATE(create_time)
 
@@ -25,9 +24,39 @@ ToutiaoPurchase: >
  purchase_record p
  LEFT JOIN users u ON p.user_id = u.id
  WHERE u.platform BETWEEN 1090 AND 1099
- AND  DATE(p.create_time)=?
  GROUP BY DATE(p.create_time),u.platform,p.user_id)a
  GROUP BY platform,create_time
+
+ToutiaoPurchaseGender: >
+ SELECT platform,a.create_time,if(SUBSTR(ui.id_card FROM 17 FOR 1)%2=0,'女','男'),COUNT(1)
+ FROM (
+ SELECT
+ DATE(p.create_time) create_time,
+ u.platform platform,
+ p.user_id,
+ COUNT(1) count,
+ SUM(p.number) number
+ FROM
+ purchase_record p LEFT JOIN users u ON p.user_id = u.id
+ WHERE u.platform BETWEEN 1090 AND 1099
+ GROUP BY DATE(p.create_time),u.platform,p.user_id
+ )a LEFT JOIN user_infos ui ON a.user_id= ui.user_id
+ GROUP BY platform,a.create_time,SUBSTR(ui.id_card FROM 17 FOR 1)%2 
+ ORDER BY platform ,a.create_time
+
+ToutiaoPurchaseCount: >
+ SELECT
+ u.platform,
+ DATE(p.create_time),
+ b.days_limit,
+ COUNT(1)xx
+ FROM
+ purchase_record p
+ LEFT JOIN users u ON p.user_id = u.id
+ LEFT JOIN bids b ON p.bid_id = b.id 
+ WHERE u.platform BETWEEN 1090 AND 1099
+ GROUP BY  platform, DATE(p.create_time),b.days_limit
+ ORDER BY  platform,p.create_time,b.days_limit 
 
 pucharse: >
   SELECT
