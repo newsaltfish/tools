@@ -11,7 +11,7 @@ func Test_sendPrize(t *testing.T) {
 
 	o := orm.NewOrm()
 	o.Raw("").Prepare()
-	getFileValue("C:/Users/xs253/Desktop/奖励.xlsx")
+	getFileValue("")
 }
 
 func getFileValue(path string) [][]string {

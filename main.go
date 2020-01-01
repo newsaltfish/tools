@@ -36,7 +36,7 @@ func main() {
 	fname = desktop + "activity\\活动2017-10-25.xlsx"
 	email.GetMessage("xs@dev999.com", "253419372@qq.com",
 		"zhy@dev999.com", "今日头条数据测试", "")
-	email.TencentExmailSend()
+	email.TencentEmailSend()
 }
 
 // Activity 活动数据

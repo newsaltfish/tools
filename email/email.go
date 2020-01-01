@@ -9,13 +9,13 @@ import (
 
 func defaultSend() {
 	m := gomail.NewMessage()
-	m.SetAddressHeader("From", "xs@dev999.com", "xs")
-	m.SetAddressHeader("To", "253419372@qq.com", "xs")
-	m.SetAddressHeader("Cc", "xs253419372@qq.com", "xs")
+	m.SetAddressHeader("From", "", "")
+	m.SetAddressHeader("To", "", "")
+	m.SetAddressHeader("Cc", "", "")
 	m.SetHeader("Subject", "Hello!")
 	m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
 	m.Attach("./email/附件/fujian.jpg")
-	d := gomail.NewDialer("smtp.exmail.qq.com", 465, "xs@dev999.com", "xS159753")
+	d := gomail.NewDialer("smtp.exmail.qq.com", 465, "", "")
 	fmt.Println("begin...")
 	// Send the email to Bob, Cora and Dan.
 	err := d.DialAndSend(m)
@@ -54,7 +54,7 @@ func Send(host, acc, pwd string, port int, messages ...*gomail.Message) {
 	fmt.Println("done...")
 }
 
-// TencentExmailSend 腾讯企业邮
-func TencentExmailSend(messages ...*gomail.Message) {
-	Send("smtp.exmail.qq.com", "xs@dev999.com", "xS159753", 465, messages...)
+// TencentEmailSend 腾讯企业邮
+func TencentEmailSend(messages ...*gomail.Message) {
+	Send("smtp.exmail.qq.com", "", "", 465, messages...)
 }

@@ -49,17 +49,6 @@ func SnakeName(base string) string {
 	return string(r)
 }
 
-// CamelNameA 驼峰转蛇形
-func CamelNameA(s string) string {
-	return strings.ToLower(Replace(s, func(i int, r rune) string {
-		if i != 0 && r >= 'A' && r <= 'Z' {
-			r += ('a' - 'A')
-			return string([]rune{'_', r})
-		}
-		return string([]rune{r})
-	}))
-}
-
 // CamelNameB 驼峰转蛇形
 func CamelNameB(s string) string {
 	return strings.TrimLeft(regexp.MustCompile(`[A-Z]`).ReplaceAllStringFunc(s, func(v string) string {

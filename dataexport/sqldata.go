@@ -8,7 +8,7 @@ import (
 	"github.com/astaxie/beego/orm"
 
 	"github.com/tealeg/xlsx"
-	"github.com/wzshiming/ffmt"
+	"gopkg.in/ffmt.v1"
 )
 
 func PurchaseRecord(fname string, purchase string, platformPurchase string) {

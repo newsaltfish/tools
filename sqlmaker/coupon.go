@@ -45,10 +45,10 @@ type rateRule struct {
 }
 
 // GetCouponRRule 读取加息券
-func GetCouponRRule(fname string) []Coupon {
-	f, _ := xlsx.OpenFile(fname)
+func GetCouponRRule(fileName string) []Coupon {
+	f, _ := xlsx.OpenFile(fileName)
 	res := make([]Coupon, 0)
-	tmap := make(map[string]interface{})
+	tmpMap := make(map[string]interface{})
 	for key, value := range f.Sheets[0].Rows {
 		if key == 0 {
 			continue
@@ -67,16 +67,19 @@ func GetCouponRRule(fname string) []Coupon {
 		days := " (有效期" + strconv.Itoa(t.TimeNow) + "天)"
 		rule := ""
 		b, _ := json.Marshal(t)
-		json.Unmarshal(b, &tmap)
+		err := json.Unmarshal(b, &tmpMap)
+		if err != nil {
+			return res
+		}
 		if t.TimeNow == 0 {
 			t.TimeRangeBegin = value.Cells[6].Value
 			t.TimeRangeEnd = value.Cells[7].Value
 			days = "(有效期至" + t.TimeRangeEnd[:10] + ")"
-			tmap["TimeRangeBegin"] = value.Cells[6].Value
-			tmap["TimeRangeEnd"] = value.Cells[7].Value
-			delete(tmap, "TimeNow")
+			tmpMap["TimeRangeBegin"] = value.Cells[6].Value
+			tmpMap["TimeRangeEnd"] = value.Cells[7].Value
+			delete(tmpMap, "TimeNow")
 		}
-		b, _ = json.Marshal(tmap)
+		b, _ = json.Marshal(tmpMap)
 		rule = string(b)
 
 		desc := "(" + value.Cells[5].Value + ") " + strconv.Itoa(r.Rate/1000) + "%加息券 "
@@ -102,10 +105,10 @@ func GetCouponRRule(fname string) []Coupon {
 }
 
 // GetCouponMRule 读取优惠券
-func GetCouponMRule(fname string) []Coupon {
-	f, _ := xlsx.OpenFile(fname)
+func GetCouponMRule(fileName string) []Coupon {
+	f, _ := xlsx.OpenFile(fileName)
 	res := make([]Coupon, 0)
-	tmap := make(map[string]interface{})
+	tmpMap := make(map[string]interface{})
 	for key, value := range f.Sheets[0].Rows {
 		if key == 0 {
 			continue
@@ -122,16 +125,19 @@ func GetCouponMRule(fname string) []Coupon {
 		days := " (有效期" + strconv.Itoa(t.TimeNow) + "天)"
 		rule := ""
 		b, _ := json.Marshal(t)
-		json.Unmarshal(b, &tmap)
+		err := json.Unmarshal(b, &tmpMap)
+		if err != nil {
+			return res
+		}
 		if t.TimeNow == 0 {
 			t.TimeRangeBegin = value.Cells[6].Value
 			t.TimeRangeEnd = value.Cells[7].Value
 			days = "(有效期至" + t.TimeRangeEnd[:10] + ")"
-			tmap["TimeRangeBegin"] = value.Cells[6].Value
-			tmap["TimeRangeEnd"] = value.Cells[7].Value
-			delete(tmap, "TimeNow")
+			tmpMap["TimeRangeBegin"] = value.Cells[6].Value
+			tmpMap["TimeRangeEnd"] = value.Cells[7].Value
+			delete(tmpMap, "TimeNow")
 		}
-		b, _ = json.Marshal(tmap)
+		b, _ = json.Marshal(tmpMap)
 		rule = string(b)
 
 		desc := "(" + value.Cells[5].Value + ") " + strconv.Itoa(t.Minus/100) + "元 " +
@@ -154,15 +160,15 @@ func GetCouponMRule(fname string) []Coupon {
 }
 
 // CouponToFile 优惠券
-func CouponToFile(fname string, p []Coupon) {
-	f, _ := xlsx.OpenFile(fname)
+func CouponToFile(fileName string, p []Coupon) {
+	f, _ := xlsx.OpenFile(fileName)
 	if f == nil {
 		f = xlsx.NewFile()
 	}
-	sname := "Sheet" + strconv.Itoa(len(f.Sheets)+1)
-	f.AddSheet(sname)
+	sheetName := "Sheet" + strconv.Itoa(len(f.Sheets)+1)
+	_, _ = f.AddSheet(sheetName)
 	for _, value := range p {
-		row := f.Sheet[sname].AddRow()
+		row := f.Sheet[sheetName].AddRow()
 		row.AddCell().SetInt(value.Id)
 		row.AddCell().SetInt(value.CouponType)
 		row.AddCell().Value = value.CouponRule
@@ -170,5 +176,5 @@ func CouponToFile(fname string, p []Coupon) {
 		row.AddCell().Value = value.CouponDesc
 		row.AddCell().SetDateWithOptions(value.CreateTime, xlsx.DateTimeOptions{Location: time.Local, ExcelTimeFormat: "yyyy-mm-dd hh:mm:ss"})
 	}
-	f.Save(fname)
+	_ = f.Save(fileName)
 }

@@ -12,21 +12,12 @@ import (
 	"os"
 )
 
-// ImgInterface 图形处理接口
-type ImgInterface interface {
+// Img 图形处理接口
+type Img interface {
 	image.Image
 	imageRotate(img image.Image, angle float64) image.Image //图片旋转
 	imaOverturn(img image.Image, way int) image.Image       //图片翻转
 }
-
-// ImgStruct 图片类型
-type ImgStruct struct {
-	ImgInterface
-}
-
-//func NewImg(img image.Image) ImgStruct{
-//return
-//}
 
 const (
 	dx = 1500
@@ -56,12 +47,12 @@ func createImage() {
 			ngba.SetRGBA(x, y, color.RGBA{uint8(253), uint8(0), 253, 255})
 		}
 	}
-	fmt.Println(alpha.At(400, 100))                      //144 在指定位置的像素
-	fmt.Println(alpha.Bounds())                          //(0,0)-(500,200)，图片边界
-	fmt.Println(alpha.Opaque())                          //false，是否图片完全透明
-	fmt.Println(alpha.PixOffset(1, 1))                   //501，指定点相对于第一个点的距离
-	fmt.Println(alpha.Stride)                            //500，两个垂直像素之间的距离
-	jpeg.Encode(file, ngba, &jpeg.Options{Quality: 100}) //将image信息写入文件中
+	fmt.Println(alpha.At(400, 100))                          //144 在指定位置的像素
+	fmt.Println(alpha.Bounds())                              //(0,0)-(500,200)，图片边界
+	fmt.Println(alpha.Opaque())                              //false，是否图片完全透明
+	fmt.Println(alpha.PixOffset(1, 1))                       //501，指定点相对于第一个点的距离
+	fmt.Println(alpha.Stride)                                //500，两个垂直像素之间的距离
+	_ = jpeg.Encode(file, ngba, &jpeg.Options{Quality: 100}) //将image信息写入文件中
 }
 
 func imageChange() {
@@ -72,9 +63,9 @@ func imageChange() {
 	}
 	defer file.Close()
 	// 资源图片
-	srcfile, _ := os.Open("QQ.png")
-	pngImg, _ := png.Decode(srcfile)
-	defer srcfile.Close()
+	srcFile, _ := os.Open("QQ.png")
+	pngImg, _ := png.Decode(srcFile)
+	defer srcFile.Close()
 	//	// 原始图片
 	//	before, _ := os.Open("test.jpeg")
 	//	beforeImg, _ := jpeg.Decode(before)
@@ -89,6 +80,5 @@ func imageChange() {
 
 // imageRotate 图片旋转
 func imageRotate(mm image.Image) {
-	//	var img = new(ImgStruct)
 
 }

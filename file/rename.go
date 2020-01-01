@@ -8,7 +8,7 @@ import (
 )
 
 func ApkTrim(filename string, newPath string) {
-	filepath.Walk(filename, func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(filename, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() || !strings.HasSuffix(info.Name(), ".apk") {
 			return nil
 		}

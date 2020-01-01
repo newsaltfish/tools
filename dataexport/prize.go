@@ -8,7 +8,7 @@ import (
 )
 
 func Prize() {
-	f, _ := xlsx.OpenFile("C:/Users/xs253/Desktop/奖励.xlsx")
+	f, _ := xlsx.OpenFile("")
 	ss := f.Sheets[0]
 	for _, value := range ss.Rows {
 		fmt.Println(value.Cells)

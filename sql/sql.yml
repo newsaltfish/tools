@@ -3,60 +3,60 @@
 
 # Toutiao 金日头条
 ToutiaoRegister: >
-   SELECT
-   platform,
-   DATE(create_time),
-   COUNT(1)
-   FROM users
-   WHERE platform BETWEEN 1090 AND 1099
-   GROUP BY platform,DATE(create_time)
-   ORDER BY platform,DATE(create_time)
+  SELECT
+  platform,
+  DATE(create_time),
+  COUNT(1)
+  FROM users
+  WHERE platform BETWEEN 1090 AND 1099
+  GROUP BY platform,DATE(create_time)
+  ORDER BY platform,DATE(create_time)
 
 ToutiaoPurchase: >
- SELECT platform,create_time,COUNT(1),SUM(number)/100
- FROM (
- SELECT
- DATE(p.create_time) create_time,
- u.platform platform,
- COUNT(1) count,
- SUM(p.number) number
- FROM
- purchase_record p
- LEFT JOIN users u ON p.user_id = u.id
- WHERE u.platform BETWEEN 1090 AND 1099
- GROUP BY DATE(p.create_time),u.platform,p.user_id)a
- GROUP BY platform,create_time
+  SELECT platform,create_time,COUNT(1),SUM(number)/100
+  FROM (
+  SELECT
+  DATE(p.create_time) create_time,
+  u.platform platform,
+  COUNT(1) count,
+  SUM(p.number) number
+  FROM
+  purchase_record p
+  LEFT JOIN users u ON p.user_id = u.id
+  WHERE u.platform BETWEEN 1090 AND 1099
+  GROUP BY DATE(p.create_time),u.platform,p.user_id)a
+  GROUP BY platform,create_time
 
 ToutiaoPurchaseGender: >
- SELECT platform,a.create_time,if(SUBSTR(ui.id_card FROM 17 FOR 1)%2=0,'女','男'),COUNT(1)
- FROM (
- SELECT
- DATE(p.create_time) create_time,
- u.platform platform,
- p.user_id,
- COUNT(1) count,
- SUM(p.number) number
- FROM
- purchase_record p LEFT JOIN users u ON p.user_id = u.id
- WHERE u.platform BETWEEN 1090 AND 1099
- GROUP BY DATE(p.create_time),u.platform,p.user_id
- )a LEFT JOIN user_infos ui ON a.user_id= ui.user_id
- GROUP BY platform,a.create_time,SUBSTR(ui.id_card FROM 17 FOR 1)%2 
- ORDER BY platform ,a.create_time
+  SELECT platform,a.create_time,if(SUBSTR(ui.id_card FROM 17 FOR 1)%2=0,'女','男'),COUNT(1)
+  FROM (
+  SELECT
+  DATE(p.create_time) create_time,
+  u.platform platform,
+  p.user_id,
+  COUNT(1) count,
+  SUM(p.number) number
+  FROM
+  purchase_record p LEFT JOIN users u ON p.user_id = u.id
+  WHERE u.platform BETWEEN 1090 AND 1099
+  GROUP BY DATE(p.create_time),u.platform,p.user_id
+  )a LEFT JOIN user_infos ui ON a.user_id= ui.user_id
+  GROUP BY platform,a.create_time,SUBSTR(ui.id_card FROM 17 FOR 1)%2
+  ORDER BY platform ,a.create_time
 
 ToutiaoPurchaseCount: >
- SELECT
- u.platform,
- DATE(p.create_time),
- b.days_limit,
- COUNT(1)xx
- FROM
- purchase_record p
- LEFT JOIN users u ON p.user_id = u.id
- LEFT JOIN bids b ON p.bid_id = b.id 
- WHERE u.platform BETWEEN 1090 AND 1099
- GROUP BY  platform, DATE(p.create_time),b.days_limit
- ORDER BY  platform,p.create_time,b.days_limit 
+  SELECT
+  u.platform,
+  DATE(p.create_time),
+  b.days_limit,
+  COUNT(1)xx
+  FROM
+  purchase_record p
+  LEFT JOIN users u ON p.user_id = u.id
+  LEFT JOIN bids b ON p.bid_id = b.id
+  WHERE u.platform BETWEEN 1090 AND 1099
+  GROUP BY  platform, DATE(p.create_time),b.days_limit
+  ORDER BY  platform,p.create_time,b.days_limit
 
 pucharse: >
   SELECT
@@ -83,7 +83,7 @@ pucharse: >
   WHERE u.state !=102
   ORDER BY pr.user_id,pr.create_time
 
-platformPurchase: > 
+platformPurchase: >
   SELECT
   IF(@uid=a.user_id, @t:=@t+1,IF(a.user_id is NULL ,0,@t:=1))'z',
   @uid:=a.user_id '用户id',
@@ -134,19 +134,19 @@ charge: >
   ORDER BY  cr.number,cr.pay_no
 
 balanceRecord: >
-   SELECT
-   ui.user_name,
-   ua.account,
-   (cr.after_number-cr.before_number)/100,
-   cr.create_time,
-   cr.record_desc
-   FROM balance_change_record cr
-   LEFT JOIN user_infos ui ON cr.user_id=ui.user_id
-   LEFT JOIN user_account ua ON cr.user_id =ua.user_id
-   LEFT JOIN users u ON cr.user_id=u.id
-   where
-   cr.from_type=2290
-   AND ua.account!=18000000000
-   AND u.state !=102
-   AND DATE(cr.create_time)= ?
-   ORDER BY cr.record_desc ,cr.create_time
+  SELECT
+  ui.user_name,
+  ua.account,
+  (cr.after_number-cr.before_number)/100,
+  cr.create_time,
+  cr.record_desc
+  FROM balance_change_record cr
+  LEFT JOIN user_infos ui ON cr.user_id=ui.user_id
+  LEFT JOIN user_account ua ON cr.user_id =ua.user_id
+  LEFT JOIN users u ON cr.user_id=u.id
+  where
+  cr.from_type=2290
+  AND ua.account!=18000000000
+  AND u.state !=102
+  AND DATE(cr.create_time)= ?
+  ORDER BY cr.record_desc ,cr.create_time
