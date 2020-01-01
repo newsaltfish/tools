@@ -11,9 +11,9 @@ import (
 	"gopkg.in/ffmt.v1"
 )
 
-func PurchaseRecord(fname string, purchase string, platformPurchase string) {
-	sliceToFile(paramToInterface(sqlData(fname, purchase)), fname)
-	sliceToFile(paramToInterface(sqlData(fname, platformPurchase)), fname)
+func PurchaseRecord(fileName string, purchase string, platformPurchase string) {
+	sliceToFile(paramToInterface(sqlData(fileName, purchase)), fileName)
+	sliceToFile(paramToInterface(sqlData(fileName, platformPurchase)), fileName)
 }
 
 // SqlToFile sql查询结果导出
@@ -32,8 +32,8 @@ func SliceToFile(req [][]interface{}, fname string) {
 }
 
 // ActivityRecord 活动
-func ActivityRecord(fname string, date string, balanceRecord string) {
-	sliceToFile(paramToInterface(sqlData(balanceRecord, date)), fname)
+func ActivityRecord(fileName string, date string, balanceRecord string) {
+	sliceToFile(paramToInterface(sqlData(balanceRecord, date)), fileName)
 }
 
 func sqlData(sql string, args ...interface{}) (v []orm.ParamsList) {
