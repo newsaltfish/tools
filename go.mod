@@ -5,6 +5,8 @@ go 1.13
 require (
 	github.com/astaxie/beego v1.12.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
+	github.com/labstack/echo v3.3.10+incompatible
+	github.com/labstack/gommon v0.3.0
 	github.com/tealeg/xlsx v1.0.5
 	gopkg.in/ffmt.v1 v1.5.5
 )
